@@ -35,7 +35,13 @@ downloaded_sets = pd.Series(downloaded_sets)
 SSSQ_sets = downloaded_sets.str.contains('SSSQ', case=True, regex=True)
 downloaded_sets = downloaded_sets[~SSSQ_sets]
 
-# loop through survey files and store all completed set names
+# remove non-valid sona IDs (non-numerical entries; e.g. Debug, Levannah, etc.)
+invalid_sona = filter(str.isdigit, downloaded_sets)
+downloaded_sets = downloaded_sets[~invalid_sona]
+
+
+
+# loop through survey files and store all completed set namesS
 for filename in os.listdir(survey_path):
     if filename.endswith(".csv"):
         print(os.path.join(survey_path, filename))
