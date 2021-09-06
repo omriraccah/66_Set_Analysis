@@ -11,7 +11,7 @@ import json
 raw_data_folder = '../Raw_Data'  # Set folder of all raw data
 post_exclusion_folder = '../Post_Exclusion_Data'
 
-min_responses_per_set = 15
+min_responses_per_set = 10
 
 ''' Counters '''
 total_trials = 0
