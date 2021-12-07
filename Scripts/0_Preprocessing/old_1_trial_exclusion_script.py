@@ -9,7 +9,7 @@ import os
 import json
 
 '''DEFAULTS'''
-raw_data_folder = '../Raw_Data' #Set folder of all raw data
+raw_data_folder = '../2_Raw_data' #Set folder of all raw data
 post_exclusion_folder = '../Post_Trial_Exclusion_Data'
 
 '''MAIN CODE'''

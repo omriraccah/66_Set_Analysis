@@ -24,11 +24,11 @@ def get_json(path):
 ################################################
 # Initialize relevant paths
 ################################################
-# Raw data path: path to store completed sets (i.e. cohort data)
-data_path = '/Users/omriraccah/Documents/Projects/Musical_Scales_Project/66_Set_Analysis/Raw_Data/'
+# 2_Raw_data data path: path to store completed sets (i.e. cohort data)
+data_path = '/Users/omriraccah/Documents/Projects/Musical_Scales_Project/66_Set_Analysis/2_Raw_data/'
 
 ################################################
-# Loop through subjects in Raw_Data folder
+# Loop through subjects in 2_Raw_data folder
 ################################################
 for filename in os.listdir(data_path):
     if filename.endswith(".json"):
