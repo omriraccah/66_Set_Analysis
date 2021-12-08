@@ -1,18 +1,34 @@
 import pandas as pd
 from paths import *
-# TODO: DOUBLE AND TRIPLE CHECK THAT THIS CODE WORKS AS EXPECTED
-# ATND = All Trials No Decoys
+
+
+# AT = All Trials
 AT = pd.read_pickle(processed_dir + processed_data_pickle_filename)
-ATND = AT[AT['has_decoy']==False]
+
+# ATND = All Trials No Decoys
+ATND = AT[AT['has_decoy'] == False]
 
 # Column to hold subject names
 # totals = pd.DataFrame(AT['subject'])
 
-totals = ATND.groupby(['subject','set','chose']).size().reset_index().rename(columns={0:'>subject>set>condition:count'})
-temp = ATND.groupby(['subject','set']).size().reset_index().rename(columns={0:'>subject>set:count'})
-totals = pd.merge(totals, temp, on=['subject', 'set'])
-totals['>subject>set>condition:bias'] = totals['>subject>set>condition:count']/totals['>subject>set:count']
-totals['>subject>set>condition:rt_mean'] = ATND.groupby(['subject','set','chose'], as_index=False)['rt'].transform('mean')
+totals = ATND.groupby(['subject', 'set', 'chose']).size().reset_index().rename(columns={0: '#'})
+temp = ATND.groupby(['subject', 'set', 'chose'])['rt'].mean().reset_index()
+totals = pd.merge(totals, temp, on=['subject', 'set', 'chose'])
+totals = totals.groupby(['subject', 'set', 'chose']).mean().unstack(fill_value=0).reset_index()
+totals['trials'] = totals['#'].sum(axis=1)
+totals['no_neither_trials'] = totals['trials']-totals[('#','neither')]
+
+
+temp = totals['#'].div(totals['trials'], axis=0)
+for col in temp.columns.values:
+    totals['rate', col] = temp[col]
+
+totals['rate_NN_shifted'] = totals[('#','shifted')]/totals['no_neither_trials']
+totals['rate_NN_swapped'] = totals[('#','swapped')]/totals['no_neither_trials']
+
+
+# remove MultiIndex levels (flattens df)
+totals.columns = [' '.join(col).strip() for col in totals.columns.values]
 
 totals.to_csv(processed_dir + 'totals.csv')
 
