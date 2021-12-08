@@ -6,4 +6,3 @@ raw_data_dir = ROOT_DIR + '/Data/2_Raw_data/'
 processed_dir = ROOT_DIR + '/Data/3_Processed_Data/'
 
 processed_data_pickle_filename = "processed_data.pickle"
-processed_data_csv_filename = "processed_data.csv"

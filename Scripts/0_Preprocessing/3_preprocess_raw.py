@@ -68,7 +68,4 @@ all_responses = all_responses.sort_values(by=['subject', 'time','time_elapsed'])
 # Saving the dataframe to a pickle (better than CSV because it remembers variable object types)
 all_responses.to_pickle(processed_dir + processed_data_pickle_filename)
 
-# Saving the dataframe to a csv (for human readability)
-all_responses.to_pickle(processed_dir + processed_data_csv_filename)
-
 print("Data saved to processed data directory (see paths.py)")
