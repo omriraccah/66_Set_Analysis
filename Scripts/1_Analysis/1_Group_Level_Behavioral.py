@@ -1,8 +1,6 @@
-import numpy as np
 import pandas as pd
 from paths import *
-import seaborn as sns
-
+# TODO: DOUBLE AND TRIPLE CHECK THAT THIS CODE WORKS AS EXPECTED
 # ATND = All Trials No Decoys
 AT = pd.read_pickle(processed_dir + processed_data_pickle_filename)
 ATND = AT[AT['has_decoy']==False]
