@@ -14,10 +14,41 @@ neither_inclined_subs = neither_inclined_subs[neither_inclined_subs['no_neither_
 #remove those subjects
 data = data[~data['subject'].isin(neither_inclined_subs)]
 
+data['rate shifted - rate swapped'] = data['rate shifted'] - data['rate swapped']
+data['rate not shifted'] = data['rate swapped'] + data['rate neither']
+data['rate not swapped'] = data['rate shifted'] + data['rate neither']
+
 plot_order = data.groupby('set').mean().sort_values(by=["rate shifted"], ascending=False).index.values
 fig, ax = pyplot.subplots(figsize=(8, 12))
 sns.pointplot(ax=ax, y="set", x="rate shifted", data=data, order=plot_order, height=15, aspect=11.7 / 2)
 plt.show()
+
+plot_order = data.groupby('set').mean().sort_values(by=["rate neither"], ascending=False).index.values
+fig, ax = pyplot.subplots(figsize=(8, 12))
+sns.pointplot(ax=ax, y="set", x="rate neither", data=data, order=plot_order, height=15, aspect=11.7 / 2)
+plt.show()
+
+plot_order = data.groupby('set').mean().sort_values(by=["rate swapped"], ascending=False).index.values
+fig, ax = pyplot.subplots(figsize=(8, 12))
+sns.pointplot(ax=ax, y="set", x="rate swapped", data=data, order=plot_order, height=15, aspect=11.7 / 2)
+plt.show()
+
+plot_order = data.groupby('set').mean().sort_values(by=["rate shifted - rate swapped"], ascending=False).index.values
+fig, ax = pyplot.subplots(figsize=(8, 12))
+sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped", data=data, order=plot_order, height=15, aspect=11.7 / 2)
+plt.show()
+
+plot_order = data.groupby('set').mean().sort_values(by=["rate not shifted"], ascending=False).index.values
+fig, ax = pyplot.subplots(figsize=(8, 12))
+sns.pointplot(ax=ax, y="set", x="rate not shifted", data=data, order=plot_order, height=15, aspect=11.7 / 2)
+plt.show()
+
+plot_order = data.groupby('set').mean().sort_values(by=["rate not swapped"], ascending=False).index.values
+fig, ax = pyplot.subplots(figsize=(8, 12))
+sns.pointplot(ax=ax, y="set", x="rate not swapped", data=data, order=plot_order, height=15, aspect=11.7 / 2)
+plt.show()
+
+
 
 plot_order = data.groupby('set').mean().sort_values(by=["rate_NN_shifted"], ascending=False).index.values
 fig, ax = pyplot.subplots(figsize=(8, 12))
