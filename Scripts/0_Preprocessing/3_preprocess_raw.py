@@ -2,6 +2,7 @@
 This script:
 1) Combines all of the reponses by all of the subjects into 1 big file
 2) Does basic restructuring of data
+3) Combines data with qualtrics data
 #########################################################################"""
 import os
 import path
@@ -64,6 +65,12 @@ for directory in os.listdir(raw_data_dir):
 
 all_responses = pd.DataFrame.from_dict(all_responses)
 all_responses = all_responses.sort_values(by=['subject', 'time','time_elapsed'])
+
+#Combine with qualtrics based on subject ID
+qualtrics = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")
+qualtrics = qualtrics.rename(columns={'sub':'subject'})
+all_responses = pd.merge(all_responses, qualtrics, on="subject")
+
 
 # Saving the dataframe to a pickle (better than CSV because it remembers variable object types)
 all_responses.to_pickle(processed_dir + processed_data_pickle_filename)

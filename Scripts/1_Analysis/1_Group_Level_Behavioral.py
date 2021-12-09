@@ -30,5 +30,13 @@ totals['rate_NN_swapped'] = totals[('#','swapped')]/totals['no_neither_trials']
 # remove MultiIndex levels (flattens df)
 totals.columns = [' '.join(col).strip() for col in totals.columns.values]
 
+# Merge with qualtrics
+qualtrics = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")
+qualtrics = qualtrics.rename(columns={'sub':'subject'})
+
+totals = pd.merge(totals, qualtrics, on="subject")
+
+
+
 totals.to_csv(processed_dir + 'totals.csv')
 
