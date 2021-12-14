@@ -21,10 +21,11 @@ for filename in os.listdir(qualtrics_dir):
         # drop rows 1 and 2 (they contain redundant qualtrics headers)
         curr_survey = curr_survey.iloc[2:, :]
 
+        #append to main frame
         data_frames.append(curr_survey)
 
-# contains all the subjects for the 66-set study (SSS and SSS2v), the likert-scale study (SSSQ) and other unrelated
-# studies (OVS and NOVS)
+# The qualtrics files contain all the subjects for the 66-set study (SSS and SSS2v), the likert-scale study (SSSQ) and
+# other unrelated studies (OVS and NOVS). The following lines filter only the relevant sets.
 qualtrics = pd.concat(data_frames, sort=True, ignore_index=True)
 
 # We only keep sets that have a prefix of SSS + number (e.g., SSS0001, but also SSS2v0001)

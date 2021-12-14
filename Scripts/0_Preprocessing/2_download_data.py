@@ -10,10 +10,15 @@ from paths import *
 import os
 import pandas as pd
 
-qual = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")  # path of qualtrics survey with all relevant responses
-subjects = qual['sub'].tolist()[2:]  # extract all subjects from qualtrics data
+# Loads the processed qualtrics csv we created in 1_Preprocess_Qualtrics_data.py
+qualtrics = pd.read_csv(
+    qualtrics_processed_dir + "qualtrics.csv")  # path of qualtrics survey with all relevant responses
 
-for SubjectID in subjects: #download each subject's task set
+# extract all subjects (task set IDs) from qualtrics data
+subjects = qualtrics['sub'].tolist()[2:]
+
+# Download each subject's task set
+for SubjectID in subjects:
     print("Downloading data for subject: ", SubjectID)
     os.system('aws s3 cp s3://cadseg/{0} {1}{0} --exclude="*audio*" --exclude="*images*" --recursive'
-              .format(SubjectID, raw_data_dir))
+              .format(SubjectID, raw_data_dir))  # Runs using the AWS CLI
