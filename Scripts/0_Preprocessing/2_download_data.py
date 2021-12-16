@@ -17,8 +17,14 @@ qualtrics = pd.read_csv(
 # extract all subjects (task set IDs) from qualtrics data
 subjects = qualtrics['sub'].tolist()[2:]
 
+# Get folders already in folder:
+dirs = [dir for dir in os.listdir(raw_data_dir)]
+
 # Download each subject's task set
 for SubjectID in subjects:
+    if(SubjectID in dirs):
+        print("Subject {} already exists, moving to the next subject.".format(SubjectID))
+        continue
     print("Downloading data for subject: ", SubjectID)
     os.system('aws s3 cp s3://cadseg/{0} {1}{0} --exclude="*audio*" --exclude="*images*" --recursive'
               .format(SubjectID, raw_data_dir))  # Runs using the AWS CLI
