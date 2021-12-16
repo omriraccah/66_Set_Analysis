@@ -5,17 +5,19 @@ This script:
 3) Combines data with qualtrics data
 #########################################################################"""
 
-#TODO: Exclude trials where not all 5 set notes appear (or entire subject)
+#TODO: Exclude Subjects who saw trials where not all 5 set notes appear
 
 from paths import *
 import json
 import pandas as pd
 from datetime import datetime
 
+subs_to_exclude = []
 
 all_responses = []  # Will hold all the responses in one frame
 
 for directory in os.listdir(raw_data_dir):  # Iterating through each subject directory
+    if(directory in subs_to_exclude): continue
     print("Processing:", directory)
     for filename in os.listdir(raw_data_dir + directory + "/csv"):  # looks in the /csv directory of each subject
         if filename.startswith("SSS"):  # Only looks at files that start with SSS
@@ -30,6 +32,15 @@ for directory in os.listdir(raw_data_dir):  # Iterating through each subject dir
                         if('set' not in response):
                             print("Skipping response from {}, because its structure is malformed.".format(directory))
                             continue
+
+                        transposition = response['transposition']
+                        pitches = response['probe_pitches']
+                        pitches = [(pitch-transposition)%12 for pitch in pitches]
+                        pitches = list(set(pitches))
+                        if(directory in subs_to_exclude): continue
+                        if(len(pitches)!=5):
+                            subs_to_exclude.append(directory)
+                            print("Excluding {}, because their set contains probes that do not use all 5 notes.".format(directory))
 
                         # Re-format lists as [space] delineated strings ([0,1,2] into "0 1 2" for sets)
                         # Addressing the set as a string rather than as a list makes things easier down the line.
@@ -73,8 +84,18 @@ for directory in os.listdir(raw_data_dir):  # Iterating through each subject dir
                         all_responses.append(response)
 
 
+
+
+
+
+
 # Once all responses have been appended, reformat the list of responses into a pd Dataframe.
 all_responses = pd.DataFrame.from_dict(all_responses)
+# Remove the entries from the excluded subjects
+all_responses = all_responses[~all_responses['subject'].isin(subs_to_exclude)]
+
+
+
 # To ensure the order of the dataframe we sort the values first by subject (so a subject's responses are appearing in
 # a row), Then within that subject we sort by time, and then by time elapsed (the 'time' parameter can probably be
 # omitted).
