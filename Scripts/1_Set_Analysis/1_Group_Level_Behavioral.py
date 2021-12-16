@@ -11,8 +11,6 @@ from paths import *
 AT = pd.read_pickle(processed_dir + processed_data_pickle_filename)  # AT = All Trials
 ATND = AT[AT['has_decoy'] == False]  # ATND = All Trials No Decoys
 
-# Column to hold subject names
-# totals = pd.DataFrame(AT['subject'])
 
 # Starts a new dataframe called "within" which will store the within-subject calculated fields. The following line
 # counts how many times a certain choice (e.g. 'shifted') was made within a certain set  (e.g., the pentatonic),
