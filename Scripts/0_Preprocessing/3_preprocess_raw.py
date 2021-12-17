@@ -88,13 +88,17 @@ all_responses = all_responses.sort_values(by=['subject', 'time', 'time_elapsed']
 
 # Combine with qualtrics based on subject ID
 qualtrics = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")
-qualtrics = qualtrics.rename(
-    columns={'sub': 'subject'})  # Renames the column in the qualtrics df from 'sub' to 'subject'
 # on="subject" means that the 'subject' on either dataframe corresponded to the same thing and therefore that column
 # should be the basis for merging.
 all_responses = pd.merge(all_responses, qualtrics, on="subject")
 
+# Combine with set features based on set
+features = pd.read_csv(DATA_DIR + "5-note-sets-with-features.csv")
+all_responses = pd.merge(all_responses, features, on="set")
+
+
 # Saving the dataframe to a pickle (better than CSV because it remembers variable object types)
 all_responses.to_pickle(processed_dir + processed_data_pickle_filename)
+all_responses.head(100).to_csv(processed_dir + processed_data_csv_filename)
 
 print("Data saved to processed data directory (see paths.py)")

@@ -77,4 +77,4 @@ qualtrics = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")
 qualtrics = qualtrics.rename(columns={'sub': 'subject'})
 modes_within = pd.merge(modes_within, qualtrics, on="subject")
 
-modes_within.to_csv(processed_dir + 'modes_within.csv')  # Saving to file.
+modes_within.to_csv(processed_dir + 'modes_group_level_results.csv')  # Saving to file.
