@@ -31,6 +31,8 @@ within = within.groupby(['subject', 'set', 'chose']).mean().unstack(fill_value=0
 # holds the TOTAL number of trials that subject saw for that set.
 within['trials'] = within['#'].sum(axis=1)
 
+
+
 # The total number of trials if we ignore neithers.
 within['no_neither_trials'] = within['trials'] - within[('#', 'neither')]
 
@@ -45,6 +47,7 @@ within['rate_NN_swapped'] = within[('#', 'swapped')] / within['no_neither_trials
 
 # remove MultiIndex levels (flattens df)
 within.columns = [' '.join(col).strip() for col in within.columns.values]
+
 
 # Merge with qualtrics so richer crossections can be achieved. (The same code appear in 3_reprocess_raw.py)
 qualtrics = pd.read_csv(qualtrics_processed_dir + "qualtrics.csv")

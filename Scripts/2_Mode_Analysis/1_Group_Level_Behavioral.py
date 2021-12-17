@@ -4,7 +4,7 @@ from paths import *
 AT = pd.read_pickle(processed_dir + processed_data_pickle_filename)  # AT = All Trials
 OD = AT[AT['has_decoy'] == True]  # OD = All Trials With Decoys
 OD = OD[OD['set'] == "0 2 4 7 9"]  # The only trials with decoys are from the pentatonic anyway,but just in case.
-OD = OD.head(20)
+# OD = OD.head(20)
 """Reconstructing Mode"""
 
 # recovering probes pre-transposition
