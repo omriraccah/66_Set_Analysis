@@ -23,11 +23,11 @@ within = pd.read_csv(processed_dir + 'group_level_results.csv')
 #%% Data Clean-up
 # remove subjects that selected "neither" more than half the time (on entire task regardless of set)
 neither_inclined_subs = within.groupby('subject').sum()
-neither_inclined_subs = neither_inclined_subs[neither_inclined_subs['no_neither_trials']<60].index.values
+neither_inclined_subs = neither_inclined_subs[neither_inclined_subs['# no_neither_trials']<60].index.values
 within = within[~within['subject'].isin(neither_inclined_subs)]
 
 #%% remove sets with fewer than 10 no_neither trials
-within = within[within['no_neither_trials']>=10].reset_index()
+within = within[within['# no_neither_trials']>=10].reset_index()
 
 #%% Sanity: Keep only pentatonic trials
 within = within[within['set']=="0 2 4 7 9"].reset_index()
@@ -106,7 +106,7 @@ plt.show()
 # temp = within[within['section'].isin([0,5])]
 temp =within
 # plot_order = temp.groupby('set').mean().sort_values(by=["rate shifted - rate swapped"], ascending=False).index.values
-plot_order = ["0 1 2 3 5","0 2 4 7 9","0 2 4 5 7"]
+plot_order = ["0 2 4 5 7","0 2 4 7 9","0 1 2 3 5"]
 fig, ax = pyplot.subplots(figsize=(8, 9))
 sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped", data=temp, order=plot_order, hue="section")
 plt.show()
