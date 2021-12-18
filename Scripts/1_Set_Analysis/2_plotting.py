@@ -103,9 +103,10 @@ sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped (NN)", data=temp, o
 plt.show()
 
 #%% Plot rate of shifted-swapped with hues
-temp = within[within['section'].isin([0,5])]
-# temp =within
-plot_order = temp.groupby('set').mean().sort_values(by=["rate shifted - rate swapped"], ascending=False).index.values
+# temp = within[within['section'].isin([0,5])]
+temp =within
+# plot_order = temp.groupby('set').mean().sort_values(by=["rate shifted - rate swapped"], ascending=False).index.values
+plot_order = ["0 1 2 3 5","0 2 4 7 9","0 2 4 5 7"]
 fig, ax = pyplot.subplots(figsize=(8, 9))
 sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped", data=temp, order=plot_order, hue="section")
 plt.show()
