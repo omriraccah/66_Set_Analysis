@@ -64,7 +64,7 @@ GL['rate neither'] = GL['# neither'] / GL['# trials']
 
 # Calculates the rate of shifted and swapped when neithers are ignored. (NN=No Neithers)
 GL['rate_NN_shifted'] = GL['# shifted'] / GL['# no_neither_trials']
-GL['rate_NN_swapped'] = GL['# neither'] / GL['# no_neither_trials']
+GL['rate_NN_swapped'] = GL['# swapped'] / GL['# no_neither_trials']
 
 GL['rate shifted - rate swapped'] = GL['rate shifted'] - GL['rate swapped']
 GL['rate shifted - rate swapped (NN)'] = GL['rate_NN_shifted'] - GL['rate_NN_swapped']
