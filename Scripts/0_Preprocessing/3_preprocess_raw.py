@@ -5,11 +5,8 @@ This script:
 3) Combines data with qualtrics data
 #########################################################################"""
 
-# TODO: Exclude Subjects who saw trials where not all 5 set notes appear
 import math
-
 import numpy as np
-
 from paths import *
 import json
 import pandas as pd

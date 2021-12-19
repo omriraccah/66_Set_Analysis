@@ -14,6 +14,8 @@ ATND = AT[AT['has_decoy'] == False]  # ATND = All Trials No Decoys
 # Ignore malformed trials (only selects trials that have an empty 'malformed' field)
 ATND = ATND[ATND['malformed'] == ""]
 
+
+
 # Starts a new dataframe called "GL" which will store the group-level calculated fields. The following line
 # counts how many times a certain choice (e.g. 'shifted') was made within a certain set  (e.g., the pentatonic),
 # within a certain subject (e.g., SSS0001)
@@ -37,6 +39,7 @@ GL = pd.merge(GL, shifted_rt, on=['subject', 'set'])
 GL = pd.merge(GL, swapped_rt, on=['subject', 'set'])
 GL = pd.merge(GL, neither_rt, on=['subject', 'set'])
 
+#Count trials for each condition
 shifted_count = ATND[ATND['chose'] == 'shifted'].groupby(['subject', 'set'])['name'].count().reset_index()
 shifted_count = shifted_count.rename(columns={'name':'# shifted'})
 
@@ -51,8 +54,44 @@ GL = pd.merge(GL, shifted_count, on=['subject', 'set'])
 GL = pd.merge(GL, swapped_count, on=['subject', 'set'])
 GL = pd.merge(GL, neither_count, on=['subject', 'set'])
 
+#Count trials for each button for each subject for each set
+first_count = ATND[ATND['response'] == '1st'].groupby(['subject', 'set'])['name'].count().reset_index()
+first_count = first_count.rename(columns={'name':'# 1st button'})
+
+second_count = ATND[ATND['response'] == '2nd'].groupby(['subject', 'set'])['name'].count().reset_index()
+second_count = second_count.rename(columns={'name':'# 2nd button'})
+
+neitherB_count = ATND[ATND['response'] == 'neither'].groupby(['subject', 'set'])['name'].count().reset_index()
+neitherB_count = neitherB_count.rename(columns={'name':'# neither button'})
+
+# The df is merged with the mean number of trials for each condition.
+GL = pd.merge(GL, first_count, on=['subject', 'set'])
+GL = pd.merge(GL, second_count, on=['subject', 'set'])
+GL = pd.merge(GL, neitherB_count, on=['subject', 'set'])
+
+#Count trials for each button for each subject across all sets
+first_count = ATND[ATND['response'] == '1st'].groupby(['subject'])['name'].count().reset_index()
+first_count = first_count.rename(columns={'name':'# 1st button (task)'})
+
+second_count = ATND[ATND['response'] == '2nd'].groupby(['subject'])['name'].count().reset_index()
+second_count = second_count.rename(columns={'name':'# 2nd button (task)'})
+
+neitherB_count = ATND[ATND['response'] == 'neither'].groupby(['subject'])['name'].count().reset_index()
+neitherB_count = neitherB_count.rename(columns={'name':'# neither button (task)'})
+
+# The df is merged with the mean number of trials for each condition.
+GL = pd.merge(GL, first_count, on=['subject'])
+GL = pd.merge(GL, second_count, on=['subject'])
+GL = pd.merge(GL, neitherB_count, on=['subject'])
+
+# holds the TOTAL number of button presses for that subject across entire task.
+GL['# button presses (task)'] = GL['# 1st button (task)'] + GL['# 2nd button (task)'] + GL['# neither button (task)']
+
 # holds the TOTAL number of trials that subject saw for that set.
 GL['# trials'] = GL['# shifted'] + GL['# swapped'] + GL['# neither']
+
+# holds the TOTAL number of button presses for that set.
+GL['# button presses'] = GL['# 1st button'] + GL['# 2nd button'] + GL['# neither button']
 
 # The total number of trials if we ignore neithers.
 GL['# no_neither_trials'] = GL['# trials'] - GL['# neither']
@@ -61,6 +100,16 @@ GL['# no_neither_trials'] = GL['# trials'] - GL['# neither']
 GL['rate shifted'] = GL['# shifted'] / GL['# trials']
 GL['rate swapped'] = GL['# swapped'] / GL['# trials']
 GL['rate neither'] = GL['# neither'] / GL['# trials']
+
+# Iterates through the different button presses (1st, 2nd, neither) and calculates their rate (0 through 1).
+GL['rate pressed 1st'] = GL['# 1st button'] / GL['# button presses']
+GL['rate pressed 2nd'] = GL['# 2nd button'] / GL['# button presses']
+GL['rate pressed neither'] = GL['# neither button'] / GL['# button presses']
+
+# Iterates through the different button presses (1st, 2nd, neither) and calculates their rate (0 through 1) across task.
+GL['rate pressed 1st (task)'] = GL['# 1st button (task)'] / GL['# button presses (task)']
+GL['rate pressed 2nd (task)'] = GL['# 2nd button (task)'] / GL['# button presses (task)']
+GL['rate pressed neither (task)'] = GL['# neither button (task)'] / GL['# button presses (task)']
 
 # Calculates the rate of shifted and swapped when neithers are ignored. (NN=No Neithers)
 GL['rate_NN_shifted'] = GL['# shifted'] / GL['# no_neither_trials']

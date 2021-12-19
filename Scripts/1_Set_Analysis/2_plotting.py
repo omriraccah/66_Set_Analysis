@@ -3,6 +3,7 @@ This script uses the data aggregated, formatted, and structured in previous scri
 #########################################################################"""
 
 #%% Load dependencies
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import pyplot
@@ -17,7 +18,6 @@ WITHIN SUBJECT ANALYSIS
 ###"""
 
 #%% Load data
-
 within = pd.read_csv(processed_dir + 'group_level_results.csv')
 
 #%% Data Clean-up
@@ -62,6 +62,42 @@ plot_order = temp.sort_values(by=["Avg. number of trials per subject (ignoring n
 sns.catplot(y="set", x="Avg. number of trials per subject (ignoring neithers)", kind="bar", data=temp, order=plot_order, height=9)
 plt.show()
 
+#%% distribution of rate of button presses across the task
+temp = within[['subject', 'rate pressed neither (task)','rate pressed 1st (task)','rate pressed 2nd (task)']]
+temp = temp.rename(columns={'rate pressed neither (task)':'neither','rate pressed 1st (task)':'1st','rate pressed 2nd (task)':'2nd'})
+temp = temp.groupby('subject').mean().stack().reset_index()
+temp = temp.rename(columns={'level_1':'pressed',0:'rate'})
+sns.displot(data=temp, x="rate", hue="pressed",kind='kde')
+plt.show()
+
+#%% distribution of conditions across the task
+temp = within[['subject', 'rate shifted','rate swapped','rate neither','set']]
+temp = temp.rename(columns={'rate neither':'neither','rate shifted':'shifted','rate swapped':'swapped'})
+temp = temp.groupby('subject').mean().stack().reset_index()
+temp = temp.rename(columns={'level_1':'chose',0:'rate'})
+sns.displot(data=temp, x="rate", hue="chose",kind='kde')
+plt.show()
+
+#%% distribution of conditions across the task for specific sets
+temp = within[['subject', 'rate shifted','rate swapped','rate neither','set']]
+temp = temp[temp['set']=="0 1 2 3 5"]
+temp = temp.rename(columns={'rate neither':'neither','rate shifted':'shifted','rate swapped':'swapped'})
+temp = temp.groupby('subject').mean().stack().reset_index()
+temp = temp.rename(columns={'level_1':'chose',0:'rate'})
+sns.displot(data=temp, x="rate", hue="chose",kind='kde')
+plt.show()
+
+#%% distribution of some condition (shifted/neither/swapped) across the task for all/specific sets
+temp = within[['subject', 'rate neither','rate shifted','rate swapped','set']]
+temp1 = temp.groupby('set').mean().sort_values(by='rate shifted')
+worst = [*temp1.index.values[0:3]]
+best = [*temp1.index.values[-3:]]
+sets = worst+best
+temp = temp[temp['set'].isin(sets)]
+
+sns.displot(data=temp, x="rate neither", hue="set",kind='kde')
+plt.show()
+
 #%% Plot rate_shifted for each set (without ignoring neithers)
 plot_order = within.groupby('set').mean().sort_values(by=["rate shifted"], ascending=False).index.values
 fig, ax = pyplot.subplots(figsize=(8, 9))
@@ -82,10 +118,11 @@ plt.show()
 #%% Plot rate_shifted-rate_swapped for each set (without ignoring neithers)
 # temp = within[within['section'].isin([0])]
 temp =within
+# temp = temp[~temp['subject'].str.contains('SSS2v',regex=True)] #without new subjects
+# temp=temp[temp['section']==0]
 plot_order = temp.groupby('set').mean().sort_values(by=["rate shifted - rate swapped"], ascending=False).index.values
 fig, ax = pyplot.subplots(figsize=(8, 9))
 sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped", data=temp, order=plot_order)
-plt.xlim([-0.2,0.4])
 plt.show()
 
 #%% Plot rate of shifted (with neithers ignored)
@@ -95,11 +132,15 @@ sns.pointplot(ax=ax, y="set", x="rate_NN_shifted", data=within, order=plot_order
 plt.show()
 
 #%% Plot rate of shifted-swapped (with neithers ignored) with hues
-temp = within[within['section'].isin([0,5])]
-# temp =within
+# temp = within[within['section'].isin([0,5])]
+temp =within
+# temp = temp[~temp['subject'].str.contains('SSS2v',regex=True)] #without new subjects
+# temp['half'] = temp['section']/3
+# temp['half'] = temp['half'].apply(np.floor)
+# temp=temp[temp['half']==1]
 plot_order = temp.groupby('set').mean().sort_values(by=["rate shifted - rate swapped (NN)"], ascending=False).index.values
 fig, ax = pyplot.subplots(figsize=(8, 9))
-sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped (NN)", data=temp, order=plot_order, hue="section")
+sns.pointplot(ax=ax, y="set", x="rate shifted - rate swapped (NN)", data=temp, order=plot_order)
 plt.show()
 
 #%% Plot rate of shifted-swapped with hues
